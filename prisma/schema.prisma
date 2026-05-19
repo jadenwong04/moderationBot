@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Guild {
+  id              String           @id @map("guild_id") @db.VarChar(100)
+  joinDate        DateTime         @default(now()) @map("join_date") @db.DateTime(0)
+  bannedTerms     BannedTerm[]
+  ignoredChannels IgnoredChannel[]
+
+  @@map("guild")
+}
+
+model IgnoredChannel {
+  id      String @map("channel_id") @db.VarChar(100)
+  guildId String @map("guild_id") @db.VarChar(100)
+  guild   Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "ignored_channel_ibfk_1")
+
+  @@id([id, guildId])
+  @@index([guildId], map: "guild_id")
+  @@map("ignored_channel")
+}
+
+model BannedTerm {
+  guildId   String @map("guild_id") @db.VarChar(100)
+  term      String @db.VarChar(100)
+  maxOffset Int?   @default(0) @map("max_offset")
+  guild     Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "banned_term_ibfk_1")
+
+  @@id([guildId, term])
+  @@map("banned_term")
+}
