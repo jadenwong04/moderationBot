@@ -188,7 +188,7 @@ Beyond performance, regex is notoriously difficult to write and maintain. Expect
 
 ### Let's see Seer in action
 
-[![Demonstration Video](https://img.youtube.com/vi/mAT379q3io8/0.jpg)](https://www.youtube.com/watch?v=mAT379q3io8)
+[![Demonstration Video](assets/demonstration_thumbnail.png)](https://www.youtube.com/watch?v=mAT379q3io8)
 
 ## How it Works
 
