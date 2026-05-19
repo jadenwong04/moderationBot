@@ -1,5 +1,9 @@
 node_modules/
 .env
-assets/system_design.drawio
-assets/draft.txt
 dist/
+openspec/
+package-lock.json
+.gemini/
+.vscode/
+assets/documents/automata_test.ipynb
+assets/moderation_demonstration.mp4

@@ -2,6 +2,7 @@
   "name": "seer",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -13,16 +14,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@jayrbolton/suffix-tree": "^0.0.1",
-    "@mysql/xdevapi": "^8.0.35",
+    "@prisma/adapter-mariadb": "^7.8.0",
+    "@prisma/client": "^7.8.0",
     "discord.js": "^14.21.0",
     "dotenv": "^16.6.1",
+    "mariadb": "^3.5.2",
     "natural": "^8.1.0",
-    "redis": "^5.6.0",
     "wordlist-english": "^1.2.1"
   },
   "devDependencies": {
-    "@types/node": "^24.3.3",
+    "@types/natural": "^5.1.5",
+    "@types/node": "^24.12.2",
+    "prisma": "^7.8.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }

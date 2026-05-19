@@ -1,27 +1,44 @@
 {
-    "pattern_match_ascii": {
-        "lbound": 0,
-        "ubound": 127
-    },
-    "guild_data_ttl": {
-        "event_scheduler": {
-            "unit": "DAY",
-            "quantity": 7
+    "ui": {
+        "embedColor": 39423,
+        "pagination": {
+            "defaultPageSize": 5,
+            "timeout": 60000
         },
-        "interval": {
-            "unit": "MONTH",
-            "quantity": 1
+        "interaction": {
+            "defaultInterval": 120000,
+            "channelSelectInterval": 60000
         }
     },
-    "member_data_ttl": {
-        "event_scheduler": {
-            "unit": "DAY",
-            "quantity": 1
+    "moderation": {
+        "lookout": {
+            "maxTermLength": 25
         },
-        "interval": {
-            "unit": "DAY",
-            "quantity": 7
+        "patternMatching": {
+            "asciiLBound": 0,
+            "asciiUBound": 127
+        }
+    },
+    "dataRetention": {
+        "guild": {
+            "eventScheduler": {
+                "unit": "DAY",
+                "quantity": 7
+            },
+            "interval": {
+                "unit": "MONTH",
+                "quantity": 1
+            }
+        },
+        "member": {
+            "eventScheduler": {
+                "unit": "DAY",
+                "quantity": 1
+            },
+            "interval": {
+                "unit": "DAY",
+                "quantity": 7
+            }
         }
     }
 }
-
