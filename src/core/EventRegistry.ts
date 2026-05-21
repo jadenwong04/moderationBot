@@ -1,10 +1,10 @@
-import { Events, inlineCode, MessageFlags, PermissionFlagsBits } from 'discord.js';
+import { Events, inlineCode, MessageFlags } from 'discord.js';
 import { ModerationBot } from './ModerationBot.js';
 import { 
-    guildRepository, 
-    channelRepository 
+    guildRepository
 } from '../repositories/Index.js';
 import { BannedTerm } from '../moderation/Violation.js';
+import { auditLogManager } from './AuditLogManager.js';
 
 export class EventRegistry {
     constructor(private bot: ModerationBot) {}
@@ -47,25 +47,35 @@ export class EventRegistry {
                 }
             } 
 
+            if (interaction.isStringSelectMenu()) {
+                if (interaction.customId.startsWith("audit:")) {
+                    await auditLogManager.handleSelectMenu(interaction);
+                }
+            }
+
             if (interaction.isModalSubmit()) {
-                try {
-                    await this.bot.modalHandler.submit(
-                        interaction.customId, 
-                        { 
-                            guild_id: interaction.guildId,
-                            submission_field: interaction.fields.fields
-                        }
-                    );
-                    await interaction.reply({
-                        content: `Modal: ${inlineCode(interaction.customId)} Submitted Successfully!`,
-                        flags: MessageFlags.Ephemeral
-                    });
-                } catch (e) {
-                    console.error(e);
-                    await interaction.reply({
-                        content: `Modal: ${inlineCode(interaction.customId)} Failed!`,
-                        flags: MessageFlags.Ephemeral
-                    });
+                if (interaction.customId.startsWith("audit_modal:")) {
+                    await auditLogManager.handleModalSubmit(interaction);
+                } else {
+                    try {
+                        await this.bot.modalHandler.submit(
+                            interaction.customId, 
+                            { 
+                                guild_id: interaction.guildId,
+                                submission_field: interaction.fields.fields
+                            }
+                        );
+                        await interaction.reply({
+                            content: `Modal: ${inlineCode(interaction.customId)} Submitted Successfully!`,
+                            flags: MessageFlags.Ephemeral
+                        });
+                    } catch (e) {
+                        console.error(e);
+                        await interaction.reply({
+                            content: `Modal: ${inlineCode(interaction.customId)} Failed!`,
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
                 }
             }
         });
@@ -79,32 +89,27 @@ export class EventRegistry {
 
             const guild = await client.guilds.fetch(message.guildId);
             const channel = await guild.channels.fetch(message.channelId);
-            
-            // TODO: Update this to fetch from cache first
-            const is_ignored = await channelRepository.isIgnored(message.guildId, message.channelId);
 
-            if (!is_ignored) {
-                const lookout_violations = await this.bot.moderator.moderate(
-                    message.content,
-                    message.guildId
-                );
+            const lookout_violations = await this.bot.moderator.moderate(
+                message.content,
+                message.guildId
+            );
 
-                const findValueGreaterThanZero = (map: Map<string, number>): boolean => {
-                    for (const value of map.values()) {
-                        if (value > 0) return true;
-                    }
-                    return false;
-                };
-``
-                if (findValueGreaterThanZero(lookout_violations) && channel && channel.isTextBased()) {
-                    new BannedTerm(
-                        message.author,
-                        guild,
-                        channel,
-                        message,
-                        lookout_violations
-                    ).warn();
+            const findValueGreaterThanZero = (map: Map<string, number>): boolean => {
+                for (const value of map.values()) {
+                    if (value > 0) return true;
                 }
+                return false;
+            };
+            if (findValueGreaterThanZero(lookout_violations) && channel && channel.isTextBased()) {
+                const violation = new BannedTerm(
+                    message.author,
+                    guild,
+                    channel,
+                    message,
+                    lookout_violations
+                );
+                await violation.logToChannel();
             }
         });
     }

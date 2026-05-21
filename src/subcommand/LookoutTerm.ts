@@ -25,7 +25,7 @@ export default class LookoutTerm extends SubCommand {
     interact_input_interval = config.ui.interaction.defaultInterval;
     max_lookout_term_length = config.moderation.lookout.maxTermLength;
     listing_config: ListingConfig = {
-        "title": "Lookout Terms",
+        "title": "Configured Banned Terms",
         "header": ["Term", "Offset"],
         "color": config.ui.embedColor,
         "pageSize": config.ui.pagination.defaultPageSize
@@ -40,7 +40,7 @@ export default class LookoutTerm extends SubCommand {
     };
 
     constructor(){
-        super('setting', 'lookout_term', `Terms that ${name} should be looking out for.`)
+        super('setting', 'banned_term', `Terms that ${name} should be looking out for.`)
         this.modal_handler = ModalHandler.get_instance()
         this.modal_handler.register("add_term", this, "add_term")
         this.modal_handler.register("delete_term", this, "delete_term")
@@ -79,7 +79,7 @@ export default class LookoutTerm extends SubCommand {
     private async handleAdd(interaction: ChatInputCommandInteraction): Promise<void> {
         const write_input_modal = new ModalBuilder()
             .setCustomId("add_term")
-            .setTitle("Add Lookout Term")
+            .setTitle("Add Banned Term")
 
         const term_input = new TextInputBuilder()
             .setCustomId("term")
@@ -101,7 +101,7 @@ export default class LookoutTerm extends SubCommand {
     private async handleDelete(interaction: ChatInputCommandInteraction): Promise<void> {
         const write_input_modal = new ModalBuilder()
             .setCustomId("delete_term")
-            .setTitle("Delete Lookout Term")
+            .setTitle("Delete Banned Term")
 
         const term_input = new TextInputBuilder()
             .setCustomId("term")
@@ -117,7 +117,7 @@ export default class LookoutTerm extends SubCommand {
     private async handleUpdate(interaction: ChatInputCommandInteraction): Promise<void> {
         const write_input_modal = new ModalBuilder()
             .setCustomId("update_term")
-            .setTitle("Update Lookout Term")
+            .setTitle("Update Banned Term")
 
         const term_input = new TextInputBuilder()
             .setCustomId("term")

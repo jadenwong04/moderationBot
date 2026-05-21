@@ -82,7 +82,7 @@ export class RuleBasedModerator {
             for (const hit of hits) {
                 if (hit.isExact) {
                     const tokenIdx = this.findTokenIndex(tokenIntervals, hit.physicalEnd);
-                    if (tokenIntervals[tokenIdx].text.length > term.length && this.wordDict.has(tokenIntervals[tokenIdx].text)) {
+                    if (tokenIntervals[tokenIdx].text.length > term.length && natural.PorterStemmer.stem(tokenIntervals[tokenIdx].text).length !== term.length) {
                         continue;
                     }
                     if (tokenIdx !== -1) {

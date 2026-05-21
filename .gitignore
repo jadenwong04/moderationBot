@@ -7,3 +7,4 @@ package-lock.json
 .vscode/
 assets/documents/automata_test.ipynb
 assets/moderation_demonstration.mp4
+.agents/

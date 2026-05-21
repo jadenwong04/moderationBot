@@ -5,12 +5,15 @@ import {
     Message,
     inlineCode,
     codeBlock,
-    EmbedBuilder
+    EmbedBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder
 } from "discord.js"
 import {
     format_tabular_data
 } from "../util/InteractiveComponent.js"
 import discord_client from "../DiscordClient.js"
+import { guildRepository } from "../repositories/Index.js"
 
 export abstract class Violation {
     name: string
@@ -59,6 +62,8 @@ export abstract class Violation {
                 }
             );
     }
+
+    abstract logToChannel(): Promise<void>;
 }
 
 export class BannedTerm extends Violation {
@@ -87,5 +92,87 @@ export class BannedTerm extends Violation {
                 ['Banned Term Analysis:', format_tabular_data(['Banned Term', 'Times Used'], Array.from(this.used_banned_term.entries()).filter(([_, value]) => value > 0))]
             ]
         )
+    }
+
+    async logToChannel(): Promise<void> {
+        const logChannelId = await guildRepository.getLogChannelId(this.guild.id);
+        if (!logChannelId) return;
+
+        try {
+            const channel = await this.guild.channels.fetch(logChannelId);
+            if (channel && channel.isTextBased()) {
+                const logEmbed = new EmbedBuilder()
+                    .setTitle(`Violation Log`)
+                    .setColor('Red')
+                    .setDescription(`Category: ${inlineCode(this.name)}`)
+                    .addFields(
+                        { 
+                            name: "Target User:", 
+                            value: `<@${this.user.id}>`,
+                            inline: true
+                        },
+                        { 
+                            name: "Channel:", 
+                            value: `<#${this.channel.id}> ([Jump to Message](https://discord.com/channels/${this.guild.id}/${this.channel.id}/${this.message.id}))`,
+                            inline: true
+                        },
+                        { 
+                            name: "Violating Message:", 
+                            value: codeBlock(this.message.content) 
+                        },
+                        { 
+                            name: "Banned Term Analysis:", 
+                            value: format_tabular_data(['Banned Term', 'Times Used'], Array.from(this.used_banned_term.entries()).filter(([_, value]) => value > 0))
+                        }
+                    )
+                    .setAuthor({ 
+                        name: discord_client.user?.displayName || 'Bot',
+                        iconURL: discord_client.user?.displayAvatarURL() || ''
+                    })
+                    .setTimestamp();
+
+                const selectMenu = new StringSelectMenuBuilder()
+                    .setCustomId(`audit:${this.user.id}:${this.channel.id}:${this.message.id}`)
+                    .setPlaceholder("Choose Moderation Action...")
+                    .addOptions([
+                        {
+                            label: "Delete Message",
+                            description: "Delete the offending message",
+                            value: "delete"
+                        },
+                        {
+                            label: "Warn User",
+                            description: "Send a warning Direct Message to the user",
+                            value: "warn"
+                        },
+                        {
+                            label: "Timeout User",
+                            description: "Timeout the member",
+                            value: "timeout"
+                        },
+                        {
+                            label: "Kick User",
+                            description: "Kick the member from server",
+                            value: "kick"
+                        },
+                        {
+                            label: "Ban User",
+                            description: "Ban the member from server",
+                            value: "ban"
+                        },
+                        {
+                            label: "Ignore Log",
+                            description: "Mark this log as resolved (no action)",
+                            value: "ignore"
+                        }
+                    ]);
+
+                const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
+
+                await channel.send({ embeds: [logEmbed], components: [row] });
+            }
+        } catch (error) {
+            console.error("[Violation] Failed to send log to channel:", error);
+        }
     }
 }

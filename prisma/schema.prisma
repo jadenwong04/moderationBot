@@ -7,22 +7,12 @@ datasource db {
 }
 
 model Guild {
-  id              String           @id @map("guild_id") @db.VarChar(100)
-  joinDate        DateTime         @default(now()) @map("join_date") @db.DateTime(0)
-  bannedTerms     BannedTerm[]
-  ignoredChannels IgnoredChannel[]
+  id             String       @id @map("guild_id") @db.VarChar(100)
+  joinDate       DateTime     @default(now()) @map("join_date") @db.DateTime(0)
+  log_channel_id String?      @db.VarChar(100)
+  bannedTerms    BannedTerm[]
 
   @@map("guild")
-}
-
-model IgnoredChannel {
-  id      String @map("channel_id") @db.VarChar(100)
-  guildId String @map("guild_id") @db.VarChar(100)
-  guild   Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "ignored_channel_ibfk_1")
-
-  @@id([id, guildId])
-  @@index([guildId], map: "guild_id")
-  @@map("ignored_channel")
 }
 
 model BannedTerm {

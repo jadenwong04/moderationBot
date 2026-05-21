@@ -22,6 +22,18 @@ export class GuildRepository {
         });
         return guilds.map(g => g.id);
     }
+
+    async getLogChannelId(id: string): Promise<string | null> {
+        const guild = await this.findById(id);
+        return guild?.log_channel_id || null;
+    }
+
+    async setLogChannelId(id: string, logChannelId: string | null): Promise<Guild> {
+        return prisma.guild.update({
+            where: { id },
+            data: { log_channel_id: logChannelId }
+        });
+    }
 }
 
 export const guildRepository = new GuildRepository();

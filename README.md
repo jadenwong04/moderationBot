@@ -1,16 +1,40 @@
-# Seer: Making Moderation Easy
+# Seer: Simplifying Moderation
+
+## Background
 
 Managing a growing Discord community is demanding, and your moderation tools shouldn't make it harder. Most bots require administrators to learn complex Regular Expressions or manually maintain endless lists of word variations just to stop bypass attempts like `b.a.d.w.o.r.d`. This forces human moderators to constantly play catch-up with bad actors.
 
-### The Seer Advantage
+## Problem Statement 
 
-Seer outperforms existing bots by instantly neutralizing chat bypasses with minimal configuration required.
+Existing moderation bots requires complex configuration to simulate versatility.
 
-**Reduced Maintenance:** Just tell Seer what terms to watch our for and the degree of variation, Seer automatically handles any intentional bypasses within the variation of the specified term.
+<div style="text-align: center;">
+    <figure>
+        <img src="assets/documents/images/auto_mod_config.png" alt="Discord's native moderation solution configuration panel">
+    <figcaption> <i> AutoMod Configuration Panel </i> </figcaption>
+</div>
 
-**Real-Time Moderation:** While other bots struggle to scale when the rule lists grows and chat stream velociy increases. Seer maintains consistent performance regardless of the size of the rule list.
+Take Discord's native moderation solution for an example, configuring and catching exact matches like "stupid" and "loser" is straightforward. What happens when users start adding obfuscation to the term?
 
-## The Moderation Landscape
+<div style="text-align: center;">
+    <figure>
+        <img src="assets/documents/images/obfuscation_example.png" alt="Example of obfuscated message">
+    <figcaption> <i> Obfuscation Example </i> </figcaption>
+</div>
+
+To handle these obfuscated examples using the existing solution, Moderators have to create complex regular expressions or manually list out all combinations of the obfuscation.
+
+On top of that, we cannot guaratee that the constructed regular expression is safe and comprehensive enough to cover different types of obfuscation without resulting in false postives.
+
+Seer resolves those problems by abstracting complex versatility handling to the algorithm itself and allowing moderators to configure using layman rules.
+
+## Demonstration
+
+
+
+## Problem Analysis
+
+### The Moderation Landscape
 
 Before diving into Seer's architecture, it’s worth looking at how most Discord bots currently handle moderation.
 
@@ -23,11 +47,11 @@ Before diving into Seer's architecture, it’s worth looking at how most Discord
 
 Most existing solutions rely on either conventional pattern matching algorithms—which don't scale—or complex regular expressions that can be difficult to manage and potentially dangerous to the bot's stability.
 
-## Why Scaling Moderation is Difficult
+### Why Scaling Moderation is Difficult
 
 Developing a filter for a few dozen words is straightforward, but performance and security issues emerge quickly as a server grows.
 
-### The Limits of Conventional Pattern Matching
+#### The Limits of Conventional Pattern Matching
 The most common approach in moderation bots is to check a message against a list of words using conventional pattern matching techniques. Even when these algorithms are optimized, they face a fundamental scalability barrier.
 
 *   **The Brute-Force Approach:** Many bots use standard library functions like `String.includes()`. In a multi-rule scenario, this is a conventional approach ($O(T \times P)$) where the engine effectively re-scans the message for every single banned term.
@@ -37,19 +61,19 @@ If you have a thousand banned terms, the bot is still making a thousand independ
 
 ---
 
-### Solving Multi-Pattern Matching with Finite Automata
+#### Solving Multi-Pattern Matching with Finite Automata
 To break through this scaling limit, high-performance engines use the **Finite Automaton** model. Instead of looping through rules one by one, a Finite Automaton merges all your patterns into a single, graph-like structure (a state machine). 
 
 When a message is scanned, the machine follows the paths in this graph. This allows the bot to identify *every* match in the message simultaneously in one pass, rather than re-reading the message for every word. 
 
 However, the safety and performance of this approach depend entirely on how the state machine is designed. There are two primary paths: **NFA** and **DFA**.
 
-#### The NFA Approach
+##### The NFA Approach
 **Red-DiscordBot** uses an **NFA (Non-deterministic Finite Automaton)** engine. NFAs are highly flexible, but they achieve this by allowing "choices" at each step. When an NFA hits a complex rule, it assumes a path; if that path doesn't lead to a match, it goes back and tries another.
 
 This process is called backtracking. A bad actor can exploit this by sending a "trap" message that forces the engine to explore all possible combinations in a complex regex. This is known as a **ReDoS (Regular Expression Denial of Service)** attack.
 
-#### Exploiting the NFA Model
+##### Exploiting the NFA Model
 Imagine a moderator who needs to protect their community from a specific malicious domain. They create a straightforward rule to identify and block any links pointing to `badwebsite.com`:
 
 * Original Regex: `https://badwebsite\.com/([a-zA-Z0-9/]+)`
@@ -147,7 +171,7 @@ graph TD
 
 This is an example of **catastrophic backtracking**. The attacker's regex creates a nested quantifier (a `+` inside a `+`). When the engine fails to find a match, it tries every possible mathematical combination of the string.
 
-#### The DFA Approach
+##### The DFA Approach
 
 State-of-the-art solutions like **YAGPDB** and Discord's native **auto-mod** uses a **DFA (Deterministic Finite 
 Automaton)**. 
@@ -162,11 +186,11 @@ DFAs are designed with the principle where each state must have unique transitio
 
 ---
  
-### The Human Barrier
+#### The Human Barrier
 
 Beyond performance, regex is notoriously difficult to write and maintain. Expecting moderators to craft complex patterns to catch evasions (like `a.p.p.l.e`) is unrealistic and error-prone. A single typo can lead to false positives or missed violations. We believe moderation tools should be powerful by default, without requiring users to write code.
 
-## Our Solution - Seer
+## Proposed Solution
 
 ### Configure Banned Terms
 
