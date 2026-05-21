@@ -9,11 +9,13 @@ Managing a growing Discord community is demanding, and your moderation tools sho
 Existing moderation bots requires complex configuration to simulate versatility.
 
 ![AutoMod Configuration Panel](assets/documents/images/auto_mod_config.png)
+
 *Discord's Native Solution: AutoMod Configuration Panel*
 
 Take Discord's native moderation solution for an example, configuring and catching exact matches like "stupid" and "loser" is straightforward. What happens when users start adding obfuscation to the term?
 
 ![Obfuscated Text Message](assets/documents/images/obfuscation_example.png)
+
 *Example of Obfuscation*
 
 To handle these obfuscated text messages with the existing solution, moderators have to create complex regular expressions or manually list out all combinations of the obfuscation.
