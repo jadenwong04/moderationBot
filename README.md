@@ -15,6 +15,7 @@ Existing moderation bots requires complex configuration to simulate versatility.
 Take Discord's native moderation solution for an example, configuring and catching exact matches like "stupid" and "loser" is straightforward. What happens when users start adding obfuscation to the term?
 
 **Example of Obfuscation**
+
 ![Obfuscated Text Message](assets/documents/images/obfuscation_example.png)
 
 To handle these obfuscated text messages with the existing solution, moderators have to create complex regular expressions or manually list out all combinations of the obfuscation.
