@@ -8,21 +8,15 @@ Managing a growing Discord community is demanding, and your moderation tools sho
 
 Existing moderation bots requires complex configuration to simulate versatility.
 
-<div style="text-align: center;">
-    <figure>
-        <img src="assets/documents/images/auto_mod_config.png" alt="Discord's native moderation solution configuration panel">
-    <figcaption> <i> AutoMod Configuration Panel </i> </figcaption>
-</div>
+![AutoMod Configuration Panel](assets/documents/images/auto_mod_config.png)
+*Discord's Native Solution: AutoMod Configuration Panel*
 
 Take Discord's native moderation solution for an example, configuring and catching exact matches like "stupid" and "loser" is straightforward. What happens when users start adding obfuscation to the term?
 
-<div style="text-align: center;">
-    <figure>
-        <img src="assets/documents/images/obfuscation_example.png" alt="Example of obfuscated message">
-    <figcaption> <i> Obfuscation Example </i> </figcaption>
-</div>
+![Obfuscated Text Message](assets/documents/images/obfuscation_example.png)
+*Example of Obfuscation*
 
-To handle these obfuscated examples using the existing solution, Moderators have to create complex regular expressions or manually list out all combinations of the obfuscation.
+To handle these obfuscated text messages with the existing solution, moderators have to create complex regular expressions or manually list out all combinations of the obfuscation.
 
 On top of that, we cannot guaratee that the constructed regular expression is safe and comprehensive enough to cover different types of obfuscation without resulting in false postives.
 
