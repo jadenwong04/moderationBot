@@ -24,7 +24,7 @@ Seer resolves those problems by abstracting complex versatility handling to the 
 
 ## Demonstration
 
-
+[![Demonstration Video](assets/demonstration_thumbnail.png)](https://www.youtube.com/watch?v=mAT379q3io8)
 
 ## Problem Analysis
 
@@ -204,7 +204,9 @@ Beyond performance, regex is notoriously difficult to write and maintain. Expect
 
 ![Show Banned Term Result](assets/documents/images/show_term_result.png)
 
-### Let's see Seer in action
+### Handling Banned Terms
+
+
 
 [![Demonstration Video](assets/demonstration_thumbnail.png)](https://www.youtube.com/watch?v=mAT379q3io8)
 
