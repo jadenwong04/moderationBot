@@ -1,9 +1,5 @@
 # Seer: Simplifying Moderation
 
-## Introduction
-
-
-
 ## Background
 
 Managing a growing Discord community is demanding, and your moderation tools shouldn't make it harder. Most bots require administrators to learn complex Regular Expressions or manually maintain endless lists of word variations just to stop bypass attempts like `b.a.d.w.o.r.d`. This forces human moderators to constantly play catch-up with bad actors.
